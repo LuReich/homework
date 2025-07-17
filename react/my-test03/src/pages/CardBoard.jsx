@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import Card from './Card';
 
-// --- Styled Components for layout ---
+
 const GameContainer = styled.div`
   display: flex;
   flex-direction: column;
