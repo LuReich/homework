@@ -1,0 +1,70 @@
+
+body {
+    background: linear-gradient(354deg, #ffffff, #cccccc 100%);
+    min-height: 100vh;
+}
+
+.contents {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    border: 1px solid #333;
+    height: 600px;
+    width: 60%;
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+/* 통계 표시 */
+.todo-stats {
+    padding: 15px;
+    border-bottom: 1px solid #1260ad;
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* 이 안에 todo-input-container 랑 confirm-container가 위치 */
+.control-container {
+    display: flex;
+    /* todo-input-container랑 confirm-container가 두 스타일을 가진 태그가 2개가 있고 각각 좌우 배치 */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #1260ad;
+}
+
+.todo-input-container {
+    display: flex;
+    align-items: center;
+}
+
+.todo-input input {
+    width: 250px;
+    border-radius: 7px;
+    height: 36px;
+    border: 1px solid #ced4da;
+    padding: 0 10px;
+    margin-right: 5px;
+}
+
+.todo-list-container {
+    /* 남은 공간을 모두 차지하도록 설정 */
+    flex-grow: 1;
+    /* 내용이 많아지면 스크롤바 생성 */
+    overflow-y: auto;
+}
+
+/* 완료 시 색깔 바꿈 */
+tr.completed {
+    /* 연한 회색 */
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+
+tr.completed td:nth-child(2) {
+    /* 완료한 일 가로줄 쫙 */
+    text-decoration: line-through;
+}
+
