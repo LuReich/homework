@@ -8,7 +8,7 @@ const BookList = ({ books, userMap, checkedBookIds, onCheckboxChange }) => {
                 const renterName = isRented ? userMap.get(book.rentedBy) : '대여 가능';
                 return (
                     <li key={book.id} className={`list-group-item d-flex justify-content-between align-items-center ${isRented ? 'bg-light' : ''}`}>
-                        <div className={isRented ? 'text-decoration-line-through' : ''}>
+                        <div>
                             <input
                                 type="checkbox"
                                 className="form-check-input me-2"
@@ -16,7 +16,7 @@ const BookList = ({ books, userMap, checkedBookIds, onCheckboxChange }) => {
                                 onChange={() => onCheckboxChange(book.id)}
                                 disabled={isRented} // 대여된 책은 체크박스 비활성화
                             />
-                            {book.title}
+                            {book.title} {isRented && ' (대여 중)'}
                         </div>
                         <span className={`badge ${isRented ? 'bg-secondary' : 'bg-success'}`}>
                             {renterName}
