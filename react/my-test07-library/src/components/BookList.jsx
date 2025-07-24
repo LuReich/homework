@@ -1,26 +1,31 @@
 import React from 'react';
-import BookItem from './BookItem';
 
-// 전체 도서 목록
-function BookList({ books, userMap, checkedBookIds, onCheckboxChange }) {
+const BookList = ({ books, userMap, checkedBookIds, onCheckboxChange }) => {
     return (
-        <ul style={{ listStyle: 'none', padding: 0 }}>
+        <ul className="list-group">
             {books.map(book => {
                 const isRented = book.rentedBy !== null;
-                const renterName = isRented ? userMap.get(book.rentedBy) : '';
+                const renterName = isRented ? userMap.get(book.rentedBy) : '대여 가능';
                 return (
-                    <BookItem
-                        key={book.id}
-                        book={book}
-                        isRented={isRented}
-                        renterName={renterName}
-                        isChecked={checkedBookIds.has(book.id)}
-                        onCheckboxChange={onCheckboxChange}
-                    />
+                    <li key={book.id} className={`list-group-item d-flex justify-content-between align-items-center ${isRented ? 'bg-light' : ''}`}>
+                        <div>
+                            <input
+                                type="checkbox"
+                                className="form-check-input me-2"
+                                checked={checkedBookIds.has(book.id)}
+                                onChange={() => onCheckboxChange(book.id)}
+                                disabled={isRented} // 대여된 책은 체크박스 비활성화
+                            />
+                            {book.title} {isRented && ' (대여 중)'}
+                        </div>
+                        <span className={`badge ${isRented ? 'bg-secondary' : 'bg-success'}`}>
+                            {renterName}
+                        </span>
+                    </li>
                 );
             })}
         </ul>
     );
-}
+};
 
 export default BookList;

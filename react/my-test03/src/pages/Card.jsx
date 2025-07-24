@@ -29,17 +29,17 @@ const CardNumber = styled.h2`
 
 function Card({ number, onSelect, isSelected: $isSelected, isDisabled: $isDisabled }) {
 
-    // 체크 박스 상태 변경 시 호출, 어떤 카드가 체크인지 언체크인지 알려주는 역할.
-    const handleChange = (e) => {
-        onSelect(number, e.target.checked);
-    };
+  // 체크 박스 상태 변경 시 호출, 어떤 카드가 체크인지 언체크인지 알려주는 역할.
+  const handleChange = (e) => {
+    onSelect(number, e.target.checked);
+  };
 
-    return (
-        <CardBoarder $isSelected={$isSelected} $isDisabled={$isDisabled}>
-            <input type="checkbox" onChange={handleChange} checked={$isSelected} disabled={$isDisabled} />
-            <CardNumber>{number}</CardNumber>
-        </CardBoarder>
-    );
+  return (
+    <CardBoarder $isSelected={$isSelected} $isDisabled={$isDisabled}>
+      <input type="checkbox" onChange={handleChange} checked={$isSelected} disabled={$isDisabled} />
+      <CardNumber>{number}</CardNumber>
+    </CardBoarder>
+  );
 }
 
 export default Card;
