@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import Login from '../components/Login';
 import MyBookList from '../components/MyBookList';
 import BookList from '../components/BookList';
@@ -19,20 +19,15 @@ const initialBooks = [
 ];
 
 function BookLayout(props) {
-    
+
     const [users, setUsers] = useState(initialUsers);
     const [books, setBooks] = useState(initialBooks);
     const [loggedInUser, setLoggedInUser] = useState(null);
-    const [selectedUser, setSelectedUser] = useState(initialUsers[0]?.id || null); // 로그인 드롭다운에서 선택한 사용자
+    const [selectedUser, setSelectedUser] = useState(users[0]?.id || null); // 로그인 드롭다운에서 선택한 사용자
 
     const [newBookTitle, setNewBookTitle] = useState(''); // 새 책 제목 입력
     const [checkedBookIds, setCheckedBookIds] = useState(new Set()); // 대여/삭제를 위해 선택된 책들
     const [checkedReturnBookIds, setCheckedReturnBookIds] = useState(new Set()); // 반납을 위해 선택된 책들
-
-    // useEffect를 사용하여 books 상태가 변경될 때마다 localStorage에 자동으로 저장
-    useEffect(() => {
-        localStorage.setItem('books', JSON.stringify(books));
-    }, [books]);
 
     // 현재 로그인한 사용자의 이름
     const loggedInUserName = useMemo(() => {
@@ -58,12 +53,6 @@ function BookLayout(props) {
         if (selectedUser) {
             setLoggedInUser(selectedUser);
         }
-    };
-
-    // 로그아웃 처리
-    const handleLogout = () => {
-        setLoggedInUser(null);
-        setCheckedReturnBookIds(new Set()); // 로그아웃 시 반납 체크박스 초기화
     };
 
     // 선택된 책들 반납
@@ -100,6 +89,13 @@ function BookLayout(props) {
     const deleteSelectedBooks = () => {
         if (checkedBookIds.size === 0) {
             alert('삭제할 책을 선택해주세요.');
+            return;
+        }
+
+        const isAnyBookRented = books.some(book => checkedBookIds.has(book.id) && book.rentedBy !== null);
+
+        if (isAnyBookRented) {
+            alert('대여 중인 책은 삭제할 수 없습니다. 선택을 확인해주세요.');
             return;
         }
 
@@ -162,8 +158,8 @@ function BookLayout(props) {
                     onSelectUser={setSelectedUser}
                     onLogin={changeLogin}
                 />
-                {(loggedInUser && <span style={{ marginLeft: '10px' }}>{loggedInUserName}</span>) 
-                || <span style={{marginLeft: '10px'}}>로그인 상태가 아닙니다.</span>}
+                {(loggedInUser && <span style={{ marginLeft: '10px' }}>{loggedInUserName}</span>)
+                    || <span style={{ marginLeft: '10px' }}>로그인 상태가 아닙니다.</span>}
             </div>
 
             <hr />
@@ -182,7 +178,6 @@ function BookLayout(props) {
             ) : (
                 <p>로그인 상태가 아닙니다.</p>
             )}
-
             <hr />
 
             <h2>전체 도서 목록</h2>
