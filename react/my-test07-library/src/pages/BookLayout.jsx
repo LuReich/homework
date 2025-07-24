@@ -2,14 +2,15 @@ import React, { useState, useMemo } from 'react';
 import Login from '../components/Login';
 import MyBookList from '../components/MyBookList';
 import BookList from '../components/BookList';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 // 초기 데이터
 const initialUsers = [
     { id: 1, name: '철수' },
     { id: 2, name: '영희' },
-    { id: 3, name: '준호'},
+    { id: 3, name: '준호' },
 ];
-
+//
 const initialBooks = [
     { id: 1, title: '리액트', rentedBy: 1 },
     { id: 2, title: '자바스크립트', rentedBy: null },
@@ -18,7 +19,7 @@ const initialBooks = [
 ];
 
 function BookLayout(props) {
-    
+
     const [users, setUsers] = useState(initialUsers);
     const [books, setBooks] = useState(initialBooks);
     const [loggedInUser, setLoggedInUser] = useState(null);
@@ -101,7 +102,7 @@ function BookLayout(props) {
         setBooks(prevBooks => prevBooks.filter(book => !checkedBookIds.has(book.id)));
         setCheckedBookIds(new Set());
     };
-    
+
     // 전체 도서 목록 체크박스 상태 변경
     const checkboxChange = (bookId) => {
         setCheckedBookIds(prevChecked => {
@@ -157,8 +158,8 @@ function BookLayout(props) {
                     onSelectUser={setSelectedUser}
                     onLogin={changeLogin}
                 />
-                {(loggedInUser && <span style={{ marginLeft: '10px' }}>{loggedInUserName}</span>) 
-                || <span style={{marginLeft: '10px'}}>로그인 상태가 아닙니다.</span>}
+                {(loggedInUser && <span style={{ marginLeft: '10px' }}>{loggedInUserName}</span>)
+                    || <span style={{ marginLeft: '10px' }}>로그인 상태가 아닙니다.</span>}
             </div>
 
             <hr />
@@ -166,7 +167,7 @@ function BookLayout(props) {
             {/* 나의 대여 목록 */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <h2>나의 대여 목록</h2>
-                <button onClick={returnSelectedBooks} disabled={!loggedInUser || checkedReturnBookIds.size === 0}>반납</button>
+                <button onClick={returnSelectedBooks} className='btn btn-primary' disabled={!loggedInUser || checkedReturnBookIds.size === 0}>반납</button>
             </div>
             {loggedInUser ? (
                 <MyBookList
@@ -180,18 +181,21 @@ function BookLayout(props) {
             <hr />
 
             <h2>전체 도서 목록</h2>
-            <div style={{ marginBottom: '10px' }}>
+            <div style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between' }}>
                 {/* 도서 추가, 대여, 삭제 */}
                 <input
                     type="text"
+                    className='text-body'
                     value={newBookTitle}
                     onChange={(e) => setNewBookTitle(e.target.value)}
                     placeholder="새 책 제목"
                     style={{ marginRight: '5px' }}
                 />
-                <button onClick={addBook} style={{ marginRight: '5px' }}>추가</button>
-                <button onClick={rentBooks} disabled={checkedBookIds.size === 0 || !loggedInUser} style={{ marginRight: '5px' }}>대여</button>
-                <button onClick={deleteSelectedBooks} disabled={checkedBookIds.size === 0}>삭제</button>
+                <div>
+                    <button onClick={addBook} className='btn btn-primary' style={{ marginRight: '5px' }}>추가</button>
+                    <button onClick={rentBooks} className='btn btn-secondary' disabled={checkedBookIds.size === 0 || !loggedInUser} style={{ marginRight: '5px' }}>대여</button>
+                    <button onClick={deleteSelectedBooks} className='btn btn-danger' disabled={checkedBookIds.size === 0}>삭제</button>
+                </div>
             </div>
             {/* 전체 도서 목록 리스트 */}
             <BookList
