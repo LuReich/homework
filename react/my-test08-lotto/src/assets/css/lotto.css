@@ -60,7 +60,6 @@ button:hover {
     border-radius: 4px;
 }
 
-/* 사용자 로또 결과 행에만 flex를 적용하여 가로 정렬 */
 .contents > h2 ~ .ball-box {
     display: flex;
     justify-content: space-between;
@@ -70,13 +69,12 @@ button:hover {
 .ball-items {
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    flex-wrap: wrap;
     gap: 1rem;
     align-items: center;
     margin-top: 18px;
 }
 
-/* 사용자 로또 공 목록의 불필요한 상단 여백 제거 */
 .contents > h2 ~ .ball-box .ball-items {
     margin-top: 0;
 }
@@ -91,13 +89,12 @@ button:hover {
     height: 70px;
     font-size: 1.5rem;
     font-weight: bold;
-    transition: background-color 0.3s ease;
 }
 
 .bonus-area {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* 보너스 라벨과 공 사이의 간격 */
+    gap: 0.5rem;
 }
 
 .bonus-label {
@@ -105,7 +102,6 @@ button:hover {
 }
 
 .lotto-result {
-    /* flex 아이템이므로 불필요한 스타일 제거 */
     font-size: 1.2rem;
     font-weight: bold;
     color: green;
