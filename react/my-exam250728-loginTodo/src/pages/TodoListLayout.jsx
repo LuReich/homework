@@ -188,11 +188,11 @@ function TodoListLayout() {
 
 
             {/* TodoListHeader 주석 처리 시, 레이아웃 영향 덜가도록 함. */}
-            <TodoListHeader
+            {/* <TodoListHeader
                 onCheckAll={checkAll}
                 isAllChecked={isAllChecked}
                 isCheckAllDisabled={isCheckAllDisabled}
-              />
+              /> */}
 
 
 
