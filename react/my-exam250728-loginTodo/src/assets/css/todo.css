@@ -1,0 +1,40 @@
+body {
+    background: linear-gradient(354deg, #ffffff, #cccccc 100%);
+    min-height: 100vh;
+}
+
+.contents {
+    display: flex;
+    flex-direction: column;
+    border-radius: 8px;
+    border: 1px solid #333;
+    height: 800px;
+    width: 60%;
+    margin: 0 auto;
+    background-color: #fff;
+}
+
+/* 통계 표시 */
+.todo-stats {
+    padding: 15px;
+    border-bottom: 1px solid #3a5066;
+    text-align: right;
+    font-weight: bold;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* 이 안에 todo-input-container 랑 confirm-container가 위치 */
+.control-container {
+    display: flex;
+    /* todo-input-container랑 confirm-container가 두 스타일을 가진 태그가 2개가 있고 각각 좌우 배치 */
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border-bottom: 1px solid #1260ad;
+}
+
+.todo-input-container {
+    display: flex;
+    align-items: center;
+}
