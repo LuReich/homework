@@ -75,7 +75,7 @@ function TodoListLayout() {
   // 할 일 삭제 (단일)
   // 언체크 한 요소의 id 값과 불일치 하는 것들만 배열에 남긴다.
   const deleteTodo = (id) => {
-    if (window.confirm('정말로 이 항목을 삭제하시겠습니까?')) {
+    if (confirm('정말로 이 항목을 삭제하시겠습니까?')) {
       updateCurrentUserTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
     }
   };
@@ -120,7 +120,13 @@ function TodoListLayout() {
 
   // 선택 항목 일괄 삭제
   const deleteSelected = () => {
-    if (window.confirm('선택된 항목들을 정말로 삭제하시겠습니까?')) {
+    // 삭제할 항목이 선택되었는지 확인합니다.
+    const isAnyTodoChecked = todos.some(todo => todo.isChecked);
+    if (!isAnyTodoChecked) {
+      alert('삭제할 항목을 선택해주세요.');
+      return;
+    }
+    if (confirm('선택된 항목들을 정말로 삭제하시겠습니까?')) {
       updateCurrentUserTodos(prevTodos => prevTodos.filter(todo => !todo.isChecked));
     }
   };
