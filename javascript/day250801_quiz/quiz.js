@@ -1,3 +1,5 @@
+// 콘솔에서 실행 시, 해당 파일 위치에서 node quiz.js 입력
+
 function solution(friends, gifts) {
 
     const n = friends.length;
