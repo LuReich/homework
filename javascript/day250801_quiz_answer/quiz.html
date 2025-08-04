@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+<script>
+
+    function solution(friends, gifts) {
+
+        // 준 사람과, 받은 사람 분리
+        const gifters=gifts.map(g=>  g.split(' '));
+
+        /*
+            users={
+                'muzi': {receiverss: [], giftCount: 0, giftPoint: 0}, 
+                'ryan': {receiverss: [], giftCount: 0, giftPoint: 0}, 
+            }
+        */
+
+        // 객체를 만들기 > 이름, 내가 준 사람, 준 선물 개수, 선물자
+        const users={};
+
+        for(let me of friends) {
+            // 유저별 정보 만들기
+            users[me]={receivers: [], giftCount: 0, giftPoint: 0};
+
+            // 선물 지수 구하기
+            gifters.forEach(([giver, receiver])=> {
+                if(me===giver) {
+                    users[me]['receivers'].push(receiver);
+                    users[me]['giftPoint']++;
+                } else if(me===receiver) {
+                    users[me]['giftPoint']--;
+                }
+            });
+        }
+
+        // 받을 선물 개수 비교하여 구하기
+        for(let i=0; i<friends.length; i++) {
+
+            // 중복을 피하기 위해서 비교 대상은 i 보다 뒤여야 한다.
+            for(let j=(i+1); j<friends.length; j++) {
+
+                const me=friends[i];
+                const compareName=friends[j];
+
+                // 내가 준 사람과 비교 대상의 정보 가져오기
+                const myInfo=users[me];
+                const compareInfo=users[compareName];
+
+                // 서로 상대방에게 선물한 개수 비교
+                const compA=myInfo['receivers'].filter(name=> name=== compareName).length;
+                const compB=compareInfo['receivers'].filter(name=> name=== me).length;
+
+                // 비교
+                if(compA>compB) {
+                    myInfo['giftCount']+=1;
+                } else if(compA<compB) {
+                    compareInfo['giftCount']+=1;
+                } else {
+
+                    if(myInfo['giftPoint']>compareInfo['giftPoint']) {
+
+                        myInfo['giftCount']+=1;
+                    } else if(myInfo['giftPoint']<compareInfo['giftPoint']) {
+                        compareInfo['giftCount']+=1;
+                    }
+                }
+            }
+        }
+
+        const answer=Math.max(...Object.values(users).map(v=> v['giftCount']));
+
+        return answer;
+    }
+
+    const friends=["muzi", "ryan", "frodo", "neo"];
+    const gifts=["muzi frodo", "muzi frodo", "ryan muzi", "ryan muzi", "ryan muzi", "frodo muzi", "frodo ryan", "neo muzi"];
+
+    (function() {
+        console.log(`가장 많이 받은 선물 개수: ${solution(friends, gifts)}`);
+    })();
+</script>
+</html>
