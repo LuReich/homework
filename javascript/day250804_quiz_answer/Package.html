@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    function solution(n, w, num) {
+
+        // 박스 전체 높이
+        const totalRows = Math.ceil(n / w);
+
+        // 박스를 2차 배열로 만들자
+        const box = Array.from({ length: totalRows }, ()=> Array(w).fill(0));
+
+        // 박스 만들기
+        let count = 1;
+        let targetRow = 0;
+        let targetCol = 0;
+
+        for (let i = totalRows - 1; i >= 0; i--) {
+
+            const row = [];
+
+            for (let j = 0; j < w; j++) {
+                if (count > n) {
+                    row.push(0);
+                    continue;
+                }
+                row.push(count++);
+            }
+
+            const reverseCount = totalRows % 2 == 0 ? 0 : 1;
+
+            box[i]=i%2==reverseCount?row.slice().reverse(): row.slice();
+
+            if(box[i].indexOf(num)>-1) {
+                targetCol=box[i].indexOf(num);
+                targetRow=i;
+            }
+        }
+
+        let answer=0;
+
+        // 최상단부터 내 위치까지 0이 아닌 박스 카운트
+        for(let i=0; i<=targetRow; i++) {
+
+            if(box[i][targetCol]!=0) {
+                answer++;
+            }
+        }
+
+        return answer;
+    }
+
+    (function() {
+        console.log(solution(22, 6, 8));
+        console.log(solution(13, 3, 6));
+    })();
+</script>
+
+</html>
