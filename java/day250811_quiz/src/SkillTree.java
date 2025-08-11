@@ -13,6 +13,7 @@ public class SkillTree {
             for (char c : skill_tree.toCharArray()) {
 
                 // skill 에 들어가있는 문자가 skill_tree 에 있다면 sb 안에 넣기
+                // skill 에 들어가있는 문자가 아니면 -1이 반환되기 때문
                 if (skill.indexOf(c) != -1) {
                     sb.append(c);
                 }
