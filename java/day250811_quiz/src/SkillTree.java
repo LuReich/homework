@@ -39,4 +39,3 @@ public class SkillTree {
         System.out.println("가능한 개수: " + result); // 예상 결과: 2
     }
 }
-// abc
