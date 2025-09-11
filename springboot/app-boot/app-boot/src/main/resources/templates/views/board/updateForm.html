@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/main_layout}">
+
+<th:block layout:fragment="css">
+
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            margin-top: 10vh;
+            align-items: center;
+        }
+
+        .write-form {
+            width: 600px;
+            margin-top: 20px;
+
+        }
+
+        #contents {
+            resize: none;
+            width: 500px;
+            height: 200px;
+            border-radius: 7px;
+        }
+
+        .table th {
+            text-align: right;
+        }
+
+        .file-list {
+            list-style-type: none;
+        }
+
+        .file-item a {
+            text-decoration: none;
+            color: black;
+
+        }
+
+        .file-item a:hover {
+            color: #bb0000;
+            font-weight: 600;
+        }
+
+        .file-link {
+            vertical-align: -3px;
+        }
+    </style>
+
+</th:block>
+
+<div layout:fragment="content">
+    <main class="container">
+        <header class="text-center">
+            <h2>게시글 수정</h2>
+        </header>
+        <section class="write-form">
+            <form id="frm">
+                <input type="hidden" id="brdId" name="brdId" class="form-control" th:value="${vo.brdId}">
+                <input type="hidden" id="isFile" name="isFile"
+                    th:value="${#lists.isEmpty(vo.fileList) ? 0 : #lists.size(vo.fileList)}">
+                <table class="table">
+                    <tbody>
+                        <tr>
+                            <th>
+                                <label for="title" class="form-label pt-2">제목</label>
+                            </th>
+                            <td>
+                                <input type="text" id="title" name="title" class="form-control" th:value="${vo.title}">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th rowspan="2" style="vertical-align: middle;">
+                                <label for="title" class="form-label pt-2">첨부파일</label>
+                            </th>
+                            <td>
+                                <input type="file" id="file" name="file" class="form-control">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span th:if="${#lists.isEmpty(vo.fileList)}">없음</span>
+
+                                <ul class="file-list" th:unless="${#lists.isEmpty(vo.fileList)}">
+                                    <li class="file-item" th:each="item : ${vo.fileList}">
+                                        [[${item.fileName}]]
+                                        <a class="file-link" href="javascript:void(0);"
+                                            th:onclick="|delFile(this, ${item.bfId})|">
+                                            <i class="fa-regular fa-circle-xmark"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>
+                                <label for="contents" class="form-label pt-2">내용</label>
+                            </th>
+                            <td>
+                                <textarea id="contents" name="contents" th:text="${vo.contents}"></textarea>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+        </section>
+        <section class="text-center">
+            <button type="button" class="btn btn-primary me-2" onclick="updateBoard();">글수정</button>
+            <button type="button" class="btn btn-secondary" onclick="goList();">취소</button>
+        </section>
+
+    </main>
+    <script>
+
+        function validated() {
+            const title = document.querySelector('#title');
+            const contents = document.querySelector('#contents');
+
+            if (title.value.trim().length === 0) {
+                alert('제목을 입력하십시오.');
+                title.focus();
+                return false;
+            }
+
+            if (contents.value.trim().length === 0) {
+                alert('내용을 입력하십시오.');
+                contents.focus();
+                return false;
+            }
+
+            const file = document.querySelector('#file').files[0];
+
+            // Check file size first if a file is selected
+            if (file) {
+                const maxSize = 50 * 1024 * 1024; // 50MB
+                if (file.size > maxSize) {
+                    alert('파일은 최대 50mb 만 가능합니다.');
+                    return false;
+                }
+            }
+
+            const fileCount = $('#isFile').val();
+
+            // If a new file is being added where one already exists, ask for confirmation
+            if (file && fileCount > 0) {
+                const isConfirm = confirm('첨부파일을 추가하시면 기존파일이 삭제됩니다.\n진행하시겠습니까?');
+                if (!isConfirm) {
+                    return false; // Stop if user cancels
+                }
+            }
+
+            return true;
+        }
+
+        // 구현해주세요
+        const delFile = (element, bfId) => {
+            const isConfirm = confirm('삭제하시면 수정을 취소해도 삭제됩니다.\n진행하시겠습니까?');
+            if (isConfirm) {
+
+                fetch(`/api/v1/board/file/delete/${bfId}`, {
+                    method: 'POST',
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.resultCode === 200) {
+                            const fileItem = element.closest('.file-item');
+                            if (fileItem) {
+                                fileItem.remove();
+                            }
+
+                            const currentFileCount = parseInt($('#isFile').val(), 10);
+                            $('#isFile').val(currentFileCount - 1);
+
+                            if (document.querySelectorAll('.file-item').length === 0) {
+                                const fileList = document.querySelector('.file-list');
+                                const noFileSpan = document.createElement('span');
+                                noFileSpan.textContent = '없음';
+                                if (fileList) {
+                                    fileList.parentNode.insertBefore(noFileSpan, fileList);
+                                    fileList.remove();
+                                }
+
+                            }
+
+                            alert('파일이 삭제되었습니다.');
+                        } else {
+                            alert('파일 삭제에 실패했습니다.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('파일 삭제 중 오류가 발생했습니다.');
+                    });
+
+            }
+        }
+
+        // 구현해주세요
+        const updateBoard = () => {
+            if (validated()) {
+                const form = document.getElementById('frm');
+                const formData = new FormData(form);
+
+                fetch('/api/v1/board/update', {
+                    method: 'POST',
+                    body: formData
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.resultCode === 200) {
+                            alert('게시글이 수정되었습니다.');
+                            location.href = '/board/list';
+                        } else {
+                            alert('게시글 수정에 실패했습니다: ' + (data.resultMsg || ''));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('게시글 수정 중 오류가 발생했습니다.');
+                    });
+            }
+        }
+
+
+        const goList = () => {
+            location.href = '/board/list';
+        }
+
+
+
+
+    </script>
+</div>
+
+</html>

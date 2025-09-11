@@ -1,0 +1,57 @@
+create table board(
+
+	brd_id int auto_increment comment '게시글 번호', 
+	title  varchar(100) not null comment '제목', 
+	contents text not null comment '내용', 
+	writer varchar(50) not null comment '작성자', 
+	read_count int default 0 comment '조회수', 
+	like_count int default 0 comment '추천수', 
+	create_date datetime default now() comment '생성일', 
+	update_date datetime default null comment '수정일', 
+	
+	primary key(brd_id)
+);
+
+
+create table board_files(
+
+	bf_id int auto_increment comment '파일 번호', 
+	brd_id int not null comment '게시글 번호', 
+	file_name varchar(255) not null comment '파일 원본 이름', 
+	stored_name varchar(255) not null comment '파일 저장 이름', 
+	file_path varchar(255) not null comment '파일 경로', 
+	file_size bigint not null comment '파일 크기 (단위: byte)', 
+	create_date datetime default now() comment '생성일', 
+	
+	primary key(bf_id), 
+	constraint bf_fk foreign key(brd_id) references board(brd_id) on delete cascade
+	
+);
+
+drop table board;
+drop table board_files;
+
+insert into board(title, contents, writer) values 
+('테스트1', '테스트1 입니다.', 'admin'),
+('테스트2', '테스트2 입니다.', 'admin'), 
+('테스트3', '테스트3 입니다.', 'admin'), 
+('테스트4', '테스트4 입니다.', 'admin'), 
+('테스트5', '테스트5 입니다.', 'admin'), 
+('테스트6', '테스트6 입니다.', 'admin'), 
+('테스트7', '테스트7 입니다.', 'admin'), 
+('테스트8', '테스트8 입니다.', 'admin'), 
+('테스트9', '테스트9 입니다.', 'admin'), 
+('테스트10', '테스트10 입니다.', 'admin'), 
+('테스트11', '테스트11 입니다.', 'admin'), 
+('테스트12', '테스트12 입니다.', 'admin'), 
+('테스트13', '테스트13 입니다.', 'admin'), 
+('테스트14', '테스트14 입니다.', 'admin'), 
+('테스트15', '테스트15 입니다.', 'admin');
+
+select * from board 
+order by brd_id desc
+limit 0, 10;
+
+select * from board 
+order by brd_id desc
+limit 10, 10;
