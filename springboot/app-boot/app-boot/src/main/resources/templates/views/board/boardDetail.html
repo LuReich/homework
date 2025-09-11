@@ -34,9 +34,23 @@
                         <th>
                           <label class="form-label pt-2">글쓴이</label> 
                         </th>
-                        <td th:text="${vo.writer}" colspan="3"></td>
+                        <td colspan="3" th:text="${vo.writer}">
+                        </td>
                     </tr>
-                    `
+                    <tr>
+                        <th>
+                          <label class="form-label pt-2">조회수</label> 
+                        </th>
+                        <td>
+                           [[${vo.readCount}]]
+                        </td>
+                        <th>
+                          <label class="form-label pt-2">좋아요</label> 
+                        </th>
+                        <td>
+                           <span id="like-count">[[${vo.likeCount}]]</span>
+                        </td>
+                    </tr>
                     <tr>
                         <th>
 						 <label class="form-label pt-2">첨부파일</label>
@@ -71,7 +85,79 @@
     </main>
     <script>
 
+        // Helper function to set a cookie
+        function setCookie(name, value, minutes) {
+            let expires = "";
+            if (minutes) {
+                const date = new Date();
+                date.setTime(date.getTime() + (minutes * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+        }
 
+        // Helper function to get a cookie
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for(let i=0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1,c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+            }
+            return null;
+        }
+
+        const deleteBoard = () => {
+            if(!confirm("삭제하시겠습니까?")) return;
+
+            const brdId = $('#brdId').val();
+
+            fetch(`/api/v1/board/delete/${brdId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.resultCode === 200){
+                    alert('삭제되었습니다.');
+                    location.href = '/board/list';
+                } else {
+                    alert('삭제에 실패했습니다.');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        const updateLike = () => {
+            const brdId = $('#brdId').val();
+            const cookieName = `like_timestamp_${brdId}`;
+            const lastLikeTimestamp = getCookie(cookieName);
+            const currentTime = new Date().getTime();
+            const oneMinute = 1 * 60 * 1000;
+
+            if (lastLikeTimestamp) {
+                const timePassed = currentTime - lastLikeTimestamp;
+                if (timePassed < oneMinute) {
+                    const remainingTime = oneMinute - timePassed;
+                    const remainingMinutes = Math.floor(remainingTime / 60000);
+                    const remainingSeconds = Math.floor((remainingTime % 60000) / 1000);
+                    alert(`좋아요는 1분에 한 번만 가능합니다. ${remainingMinutes}분 ${remainingSeconds}초 후에 다시 시도해주세요.`);
+                    return;
+                }
+            }
+
+            fetch(`/api/v1/board/like/${brdId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.likeCount !== undefined) {
+                    setCookie(cookieName, new Date().getTime(), 1);
+                    document.getElementById('like-count').innerText = data.likeCount;
+                } 
+            })
+            .catch(error => console.error('Error:', error));
+        }
 
         const goList = () =>{
             location.href = '/board/list';

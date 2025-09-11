@@ -213,4 +213,31 @@ public class BoardJPAService {
 
         return resultMap;
     }
+
+    @Transactional
+    public void deleteBoard(int brdId) throws Exception {
+        BoardEntity entity = boardRepository.findById(brdId)
+                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+
+        for (BoardFileEntity fileEntity : entity.getFileList()) {
+            File oldFile = new File(fileEntity.getFilePath() + fileEntity.getStoredName());
+            if (oldFile.exists()) {
+                oldFile.delete();
+            }
+        }
+        boardRepository.deleteById(brdId);
+    }
+
+    @Transactional
+    public Map<String, Object> updateLike(int brdId) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        BoardEntity entity = boardRepository.findById(brdId)
+                .orElseThrow(() -> new RuntimeException("게시글 없음"));
+        
+        entity.setLikeCount(entity.getLikeCount() + 1);
+        boardRepository.save(entity);
+
+        resultMap.put("likeCount", entity.getLikeCount());
+        return resultMap;
+    }
 }

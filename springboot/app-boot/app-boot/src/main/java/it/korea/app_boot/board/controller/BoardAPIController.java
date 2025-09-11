@@ -137,5 +137,22 @@ public class BoardAPIController {
         return jpaService.downLoadFile(bfId);
      }
 
+    @PostMapping("/board/delete/{brdId}")
+    public ResponseEntity<Map<String, Object>> deleteBoard(@PathVariable("brdId") int brdId) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.OK;
+        jpaService.deleteBoard(brdId);
+        resultMap.put("resultCode", 200);
+        resultMap.put("resultMsg", "OK");
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @PostMapping("/board/like/{brdId}")
+    public ResponseEntity<Map<String, Object>> updateLike(@PathVariable("brdId") int brdId) throws Exception {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = HttpStatus.OK;
+        resultMap = jpaService.updateLike(brdId);
+        return new ResponseEntity<>(resultMap, status);
+    }
 
 }

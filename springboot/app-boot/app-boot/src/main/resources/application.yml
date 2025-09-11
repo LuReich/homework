@@ -3,7 +3,7 @@ server:
   port: 9090
   file:
     upload:
-      path: c:\files\upload\
+      path: c:\\files\\upload\\
 
 spring:
   application:
@@ -63,7 +63,7 @@ spring:
     restart:
       enabled: true
 
-#mybatis 세팅
+  #mybatis 세팅
 mybatis:
   config-location: classpath:config/mybatis-config.xml
   mapper-locations: classpath:mapper/**/*.xml
