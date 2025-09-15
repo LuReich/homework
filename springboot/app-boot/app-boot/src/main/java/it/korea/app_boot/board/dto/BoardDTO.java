@@ -51,7 +51,7 @@ public class BoardDTO {
     }
 
 
-    @Builder
+     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
     @Getter
