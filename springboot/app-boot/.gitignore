@@ -36,8 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 **/logs
-<<<<<<< HEAD:springboot/app-boot/.gitignore
 /logs
-=======
-/logs
->>>>>>> bf82432629854aec9e641bfed61552310833397b:springboot/app-boot/app-boot/.gitignore
