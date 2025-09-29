@@ -79,6 +79,16 @@ public class NoticeAPIController {
         }
     }
 
+    @PostMapping("/board/{brdId}/read")
+    public ResponseEntity<Void> incrementReadCount(@PathVariable("brdId") Integer brdId) {
+        try {
+            noticeService.incrementReadCount(brdId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
     @DeleteMapping("/board/file/{bfId}")
     public ResponseEntity<Map<String, Object>> deleteFile(@PathVariable("bfId") int bfId) throws Exception {
         Map<String, Object> resultMap = noticeService.deleteFile(bfId);

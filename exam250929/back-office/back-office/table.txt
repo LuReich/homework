@@ -1,3 +1,8 @@
+-- Drop tables if they exist to ensure a clean start
+DROP TABLE IF EXISTS tb_notice_files;
+DROP TABLE IF EXISTS tb_notice;
+
+-- Create tb_notice table
 create table tb_notice(
 
 	brd_id int auto_increment comment '글 번호', 
@@ -11,14 +16,6 @@ create table tb_notice(
 	
 	primary key(brd_id)
 );
-
--- tb_notice 테스트 데이터 삽입
-INSERT INTO tb_notice (title, writer, contents) VALUES 
-    ('테스트1', '작성자1', '테스트1 내용입니다.'),
-    ('테스트2', '작성자2', '테스트2 내용입니다.'),
-    ('테스트3', '작성자3', '테스트3 내용입니다.'),
-    ('테스트4', '작성자4', '테스트4 내용입니다.'),
-    ('테스트5', '작성자5', '테스트5 내용입니다.');
 
 -- Create tb_notice_files table
 create table tb_notice_files(
@@ -34,29 +31,23 @@ create table tb_notice_files(
     constraint fk_notice_id foreign key(board_id) references tb_notice(brd_id) on delete cascade
 );
 
+-- Insert sample data into tb_notice
+INSERT INTO tb_notice(title, writer, contents) VALUES
+('테스트 게시글 01', '작성자01', '이것은 테스트 게시글 01의 내용입니다.'),
+('테스트 게시글 02', '작성자02', '이것은 테스트 게시글 02의 내용입니다.'),
+('테스트 게시글 03', '작성자03', '이것은 테스트 게시글 03의 내용입니다.'),
+('테스트 게시글 04', '작성자04', '이것은 테스트 게시글 04의 내용입니다.'),
+('테스트 게시글 05', '작성자05', '이것은 테스트 게시글 05의 내용입니다.'),
+('테스트 게시글 06', '작성자06', '이것은 테스트 게시글 06의 내용입니다.'),
+('테스트 게시글 07', '작성자07', '이것은 테스트 게시글 07의 내용입니다.'),
+('테스트 게시글 08', '작성자08', '이것은 테스트 게시글 08의 내용입니다.'),
+('테스트 게시글 09', '작성자09', '이것은 테스트 게시글 09의 내용입니다.'),
+('테스트 게시글 10', '작성자10', '이것은 테스트 게시글 10의 내용입니다.'),
+('테스트 게시글 11', '작성자11', '이것은 테스트 게시글 11의 내용입니다.'),
+('테스트 게시글 12', '작성자12', '이것은 테스트 게시글 12의 내용입니다.'),
+('테스트 게시글 13', '작성자13', '이것은 테스트 게시글 13의 내용입니다.'),
+('테스트 게시글 14', '작성자14', '이것은 테스트 게시글 14의 내용입니다.'),
+('테스트 게시글 15', '작성자15', '이것은 테스트 게시글 15의 내용입니다.');
 
 
-drop table if exists tb_users;
-
-create table tb_users(
-
-	user_id varchar(100) not null comment '아이디', 
-	passwd varchar(255) not null comment '패스워드', 
-	user_name varchar(50) not null comment '이름', 
-	birth int not null comment '생년월일', 
-	gender varchar(30) not null comment '성별', 
-	phone varchar(30) not null comment '전화번호', 
-	email varchar(100) not null comment '이메일', 
-	addr varchar(255) not null comment '주소', 
-	addr_detail varchar(255) default '' comment '상세 주소',
-	user_role varchar(50) default 'USER' comment '권한', 
-	use_yn char(1) default 'Y' comment '사용 여부: Y, N', 
-	del_yn char(1) default 'N' comment '삭제 여부: Y, N', 
-	create_date datetime default now() comment '생성일', 
-	update_date datetime default null comment '수정일', 
-	
-	primary key(user_id), 
-	constraint user_role_fk foreign key(user_role) references user_role(role_id)
-);
-
-alter table tb_users add constraint user_role_fk foreign key(user_role) referencecs user_role(role_id);
+DESCRIBE tb_notice_files;

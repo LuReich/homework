@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,14 +45,20 @@ public class NoticeService {
         return noticeRepository.findAll(pageable);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public NoticeEntity getNoticeById(Integer brdId) {
         NoticeEntity notice = noticeRepository.findById(brdId)
                 .orElseThrow(() -> new NoSuchElementException("Notice not found with id: " + brdId));
-        notice.setReadCount(notice.getReadCount() + 1);
+        
         // Explicitly initialize the fileList within the session
         notice.getFileList().size(); // Accessing the size forces initialization
-        return noticeRepository.save(notice);
+        return notice;
+    }
+
+    @Transactional
+    public void incrementReadCount(Integer brdId) {
+        // 조회수만 증가 (네이티브 쿼리로 updateDate 변경 방지)
+        noticeRepository.incrementReadCount(brdId);
     }
 
     @Transactional

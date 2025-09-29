@@ -1,10 +1,5 @@
 package it.exam.backoffice.security;
 
-import it.exam.backoffice.common.handler.LoginFailureHandler;
-import it.exam.backoffice.common.handler.LoginSuccessHandler;
-import it.exam.backoffice.common.handler.LogoutHandler;
-import it.exam.backoffice.security.service.UserServiceDetails;
-import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +17,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.HttpStatusAccessDeniedHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import it.exam.backoffice.common.handler.LoginFailureHandler;
+import it.exam.backoffice.common.handler.LoginSuccessHandler;
+import it.exam.backoffice.common.handler.LogoutHandler;
+import it.exam.backoffice.security.service.UserServiceDetails;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
