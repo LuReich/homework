@@ -1,0 +1,45 @@
+package it.exam.backoffice.admin.controller;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import it.exam.backoffice.admin.service.AdminUserService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+@Controller
+@RequestMapping("/admin")
+@RequiredArgsConstructor
+public class AdminUserController {
+
+    private final AdminUserService userService;
+
+    @GetMapping("/list")
+    public ModelAndView listView(
+            @PageableDefault(page = 0, size = 10, sort = "createDate", direction = Direction.DESC) Pageable pageable) {
+        ModelAndView view = new ModelAndView();
+        Map<String, Object> resultMap = new HashMap<>();
+        try {
+            resultMap = userService.getUserList(pageable);
+            log.info("### 회원 리스트 출력##", resultMap);
+        } catch (Exception e) {
+            log.error("######## 회원 리스트 출력 에러 ######");
+            e.printStackTrace();
+        }
+        view.addObject("data", resultMap);
+        view.setViewName("views/admin/userList");
+
+        return view;
+    }
+
+    
+}

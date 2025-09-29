@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{layout/main_layout}">
+
+<th:block layout:fragment="css">
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            margin-top: 10vh;
+            align-items: center;
+        }
+
+        .write-form {
+            width: 600px;
+            margin-top: 20px;
+
+        }
+
+        #contents {
+            resize: none;
+            width: 500px;
+            height: 200px;
+            border-radius: 7px;
+        }
+
+        .table th {
+            text-align: right;
+            vertical-align: middle;
+            /* Default for most th */
+        }
+
+        .table td {
+            vertical-align: middle;
+            /* Default for most td */
+        }
+
+        /* Specific alignment for file attachment row */
+        .table tbody tr:nth-child(3) th {
+            vertical-align: top;
+            padding-top: 0.5rem; /* Adjust this value as needed */
+        }
+
+        .table tbody tr:nth-child(3) td
+        /* Targeting the '첨부파일' td */
+        {
+            vertical-align: top;
+            padding-top: 15px;
+        }
+
+        .file-list {
+            list-style-type: none;
+            margin-top: 0;
+            /* Reset margin */
+            padding-top: 0;
+            /* Reset padding */
+        }
+
+        .file-list {
+            list-style-type: none;
+            margin-top: 0;
+            /* Reset margin */
+            padding-top: 0;
+            /* Reset padding */
+        }
+
+        .file-item {
+            margin-bottom: 0;
+            /* Reset margin */
+        }
+
+        .file-item a {
+            text-decoration: none;
+            color: black;
+
+        }
+
+        .file-item a:hover {
+            color: #bb0000;
+            font-weight: 600;
+        }
+
+        .file-link {
+            vertical-align: -3px;
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content">
+    <main class="container">
+        <header class="text-center">
+            <h2>게시글 보기</h2>
+        </header>
+        <section class="write-form">
+            <input type="hidden" id="brdId" name="brdId" th:value="${vo.brdId}">
+            <table class="table">
+                <colgroup>
+                    <col style="width:15%" />
+                    <col style="width:35%" />
+                    <col style="width:15%" />
+                    <col style="width:35%" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th>
+                            <label class="form-label pt-2">제목</label>
+                        </th>
+                        <td colspan="3">
+                            [[${vo.title}]]
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label class="form-label pt-2">글쓴이</label>
+                        </th>
+                        <td th:text="${vo.writer}" colspan="3"></td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label class="form-label pt-2">첨부파일</label>
+                        </th>
+                        <td colspan="3">
+                            <span th:if="${#lists.isEmpty(vo.fileList)}">없음</span>
+
+                            <ul class="file-list" th:unless="${#lists.isEmpty(vo.fileList)}">
+                                <li class="file-item" th:each="item : ${vo.fileList}">
+                                    <a class="file-link" th:href="@{/api/v1/board/file/{bfId}(bfId=${item.bfId})}">[[
+                                        ${item.fileName} ]]</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            <label class="form-label pt-2">내용</label>
+                        </th>
+                        <td colspan="3">
+                            <textarea class="form-control" rows="10" readonly th:text="${vo.contents}"></textarea>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        <section class="text-center">
+            <button type="button" class="btn btn-primary me-2" onclick="updateBorad();">글 수정</button>
+            <button type="button" class="btn btn-danger  me-2" onclick="deleteBoard();">글 삭제</button>
+            <button type="button" class="btn btn-secondary" onclick="goList();">목록</button>
+        </section>
+    </main>
+    <script>
+
+
+
+        const goList = () => {
+            location.href = '/board/list';
+
+        }
+
+        const updateBorad = () => {
+            const brdId = $('#brdId').val();
+            location.href = `/board/update/${brdId}`;
+        }
+
+
+        const deleteBoard = async () => {
+            const brdId = $('#brdId').val();
+            const isConfirm = confirm('정말 삭제하시겠습니까?');
+
+            if (!isConfirm) {
+                return false;
+            }
+
+            try {
+
+                const result = await axios.delete(`/api/v1/board/${brdId}`);
+                if (result.status === 204) {
+                    alert('게시글이 삭제되었습니다.');
+                    location.href = '/board/list';
+                } else {
+                    alert('게시글 삭제가 실패했습니다.');
+                }
+            } catch (error) {
+                console.log(error.response);
+                alert(error);
+            }
+        }
+
+    </script>
+
+</div>
+
+</html>
