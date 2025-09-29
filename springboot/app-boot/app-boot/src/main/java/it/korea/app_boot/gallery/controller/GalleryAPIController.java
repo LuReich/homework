@@ -1,7 +1,6 @@
 package it.korea.app_boot.gallery.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
@@ -13,12 +12,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import groovy.transform.Undefined.EXCEPTION;
 import it.korea.app_boot.gallery.dto.GalleryRequest;
-import it.korea.app_boot.gallery.dto.GalleryUpdateRequest;
 import it.korea.app_boot.gallery.service.GalleryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -60,21 +60,42 @@ public class GalleryAPIController {
         return new ResponseEntity<>(resultMap, status);
     }
 
-    // 갤러리 수정
-    @PostMapping("/gal/update")
-    public ResponseEntity<Map<String, Object>> updateGallery(@Valid @ModelAttribute GalleryUpdateRequest request) throws Exception {
+
+     @PutMapping("/gal")
+    public ResponseEntity<Map<String, Object>> updateGallery(@Valid @ModelAttribute GalleryRequest request) throws Exception {      
+        
         Map<String, Object> resultMap = new HashMap<>();
-        galleryService.updateGallery(request);
-        resultMap.put("resultCode", 200);
-        resultMap.put("resultMessage", "OK");
-        return new ResponseEntity<>(resultMap, HttpStatus.OK);
+        HttpStatus status = HttpStatus.OK;
+        try{
+
+            galleryService.updateGallery(request);
+            resultMap.put("resultCode", 200);
+            resultMap.put("resultMessage", "OK");
+       
+        }catch(Exception e) {
+            //예외 발생 시 공통 모듈을 실행하기 위해 예외를 던진다 
+            throw new Exception(e.getMessage() == null ? " 이미지 수정 실패" : e.getMessage());
+        }
+        return new ResponseEntity<>(resultMap, status);
     }
 
-    // 갤러리 선택 삭제
     @DeleteMapping("/gal")
-    public ResponseEntity<?> deleteGallery(@RequestBody List<String> nums) throws Exception {
-        galleryService.deleteGalleries(nums);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Map<String, Object>>  deleteGallery(@RequestParam("targetIds") String targetIds) throws Exception{
+
+          Map<String, Object> resultMap = new HashMap<>();
+          HttpStatus status = HttpStatus.OK;
+         try{
+
+            galleryService.deleteGallery(targetIds);
+            resultMap.put("resultCode", 200);
+            resultMap.put("resultMessage", "OK");
+       
+         }catch(Exception e) {
+            //예외 발생 시 공통 모듈을 실행하기 위해 예외를 던진다 
+            throw new Exception(e.getMessage() == null ? " 이미지 삭제 실패" : e.getMessage());
+        }
+        return new ResponseEntity<>(resultMap, status);
+
     }
 
 }
